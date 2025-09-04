@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User · Dadu Multiplayer</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <section class="card" id="auth">
+      <h1>🙋‍♀️ User · Dadu Multiplayer</h1>
+      <p class="muted">Masuk ke room yang dibuat Admin.</p>
+      <div class="grid-2">
+        <div>
+          <label>Namamu</label>
+          <input id="join-name" placeholder="mis. Fulan" />
+        </div>
+        <div>
+          <label>Kode Room</label>
+          <input id="join-code" placeholder="ABCD" maxlength="4" />
+        </div>
+      </div>
+      <button id="btn-join">Join Room</button>
+    </section>
+
+    <section class="card hidden" id="app">
+      <header class="roombar">
+        <div>Kode Room: <strong id="room-code">—</strong></div>
+        <div>Peran: <strong>USER</strong> · Giliran: <strong id="turn-name">—</strong></div>
+      </header>
+
+      <div class="layout">
+        <aside class="panel">
+          <h3>Pemain</h3>
+          <ul id="players"></ul>
+          <button id="leave">Keluar Room</button>
+        </aside>
+
+        <section class="stage">
+          <div class="scene">
+            <div id="cube" class="cube show-1">
+              <div class="face face-1"><span class="pip c"></span></div>
+              <div class="face face-2"><span class="pip tl"></span><span class="pip br"></span></div>
+              <div class="face face-3"><span class="pip tl"></span><span class="pip c"></span><span class="pip br"></span></div>
+              <div class="face face-4"><span class="pip tl"></span><span class="pip tr"></span><span class="pip bl"></span><span class="pip br"></span></div>
+              <div class="face face-5"><span class="pip tl"></span><span class="pip tr"></span><span class="pip c"></span><span class="pip bl"></span><span class="pip br"></span></div>
+              <div class="face face-6"><span class="pip tl"></span><span class="pip ml"></span><span class="pip bl"></span><span class="pip tr"></span><span class="pip mr"></span><span class="pip br"></span></div>
+            </div>
+          </div>
+          <div class="controls">
+            <button id="roll">Roll 🎲</button>
+          </div>
+          <div class="history">
+            <h3>Riwayat</h3>
+            <ul id="history"></ul>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/user.js"></script>
+</body>
+</html>
