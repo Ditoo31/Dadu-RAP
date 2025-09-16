@@ -238,6 +238,17 @@ io.on('connection', (socket) => {
       else io.to(code).emit('room:update', publicRoomState(room));
     }
   });
+  
+// VIEWER: Join room sebagai penonton (tidak menjadi player)
+  socket.on('room:view', ({ code }, cb) => {
+  code = (code || '').toUpperCase();
+  const room = rooms.get(code);
+  if (!room) return cb?.({ ok: false, error: 'Room tidak ditemukan' });
+
+  socket.join(code); // cuma ikut dengar event, tidak dimasukkan ke room.players
+  cb?.({ ok: true, code, state: publicRoomState(room) });
+  });
+
 });
 
 const PORT = process.env.PORT || 3000;
