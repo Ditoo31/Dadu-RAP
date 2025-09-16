@@ -58,16 +58,42 @@ function updateRoom(state){
     playersEl.appendChild(li);
   });
 
-  // kontrol admin (set turn + kick)
+  // Panel Admin: tampilkan HANYA USER sesuai urutan (state.userOrder)
   adminPlayersEl.innerHTML = '';
-  state.players.forEach(p => {
+  const order = state.userOrder || [];
+  order.forEach((id, idx) => {
+    const p = state.players.find(x => x.id === id);
+    if (!p) return;
     const li = document.createElement('li');
-    li.innerHTML = `<span>${p.name}${p.id===socket.id?' (kamu)':''}</span>`;
+    li.innerHTML = `<span>${idx+1}. ${p.name}</span>`;
 
+    // tombol reorder
+    const up = document.createElement('button');
+    up.textContent = '↑';
+    up.disabled = idx === 0;
+    up.addEventListener('click', () => {
+      socket.emit('admin:moveUser', { playerId: p.id, direction: 'up' }, (res) => {
+        if (!res?.ok) alert(res?.error || 'Gagal memindah');
+      });
+    });
+    li.appendChild(up);
+
+    const down = document.createElement('button');
+    down.textContent = '↓';
+    down.disabled = idx === order.length - 1;
+    down.style.marginLeft = '6px';
+    down.addEventListener('click', () => {
+      socket.emit('admin:moveUser', { playerId: p.id, direction: 'down' }, (res) => {
+        if (!res?.ok) alert(res?.error || 'Gagal memindah');
+      });
+    });
+    li.appendChild(down);
+
+    // set giliran / kick
     const setBtn = document.createElement('button');
     setBtn.textContent = state.turn===p.id ? 'Sedang Giliran' : 'Jadikan Giliran';
-    setBtn.disabled = state.turn===p.id || p.role !== 'user';
-    setBtn.title = p.role !== 'user' ? 'Hanya user yang bisa diberi giliran' : '';
+    setBtn.disabled = state.turn===p.id;
+    setBtn.style.marginLeft = '8px';
     setBtn.addEventListener('click', () => {
       socket.emit('admin:setTurn', { playerId: p.id }, (res) => {
         if (!res?.ok) alert(res?.error || 'Gagal set giliran');
@@ -75,18 +101,16 @@ function updateRoom(state){
     });
     li.appendChild(setBtn);
 
-    if (p.role !== 'admin') {
-      const kickBtn = document.createElement('button');
-      kickBtn.textContent = 'Kick';
-      kickBtn.style.marginLeft = '8px';
-      kickBtn.addEventListener('click', () => {
-        if (!confirm(`Kick ${p.name}?`)) return;
-        socket.emit('admin:kick', { playerId: p.id }, (res) => {
-          if (!res?.ok) alert(res?.error || 'Gagal kick');
-        });
+    const kickBtn = document.createElement('button');
+    kickBtn.textContent = 'Kick';
+    kickBtn.style.marginLeft = '6px';
+    kickBtn.addEventListener('click', () => {
+      if (!confirm(`Kick ${p.name}?`)) return;
+      socket.emit('admin:kick', { playerId: p.id }, (res) => {
+        if (!res?.ok) alert(res?.error || 'Gagal kick');
       });
-      li.appendChild(kickBtn);
-    }
+    });
+    li.appendChild(kickBtn);
 
     adminPlayersEl.appendChild(li);
   });

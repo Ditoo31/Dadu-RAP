@@ -104,6 +104,6 @@ socket.on('rolled', ({ value, name, time, turn }) => {
 
 // Jika di-kick oleh admin
 socket.on('kicked', ({ code, by }) => {
-  alert('Anda di-kick oleh Admin dari room ' + code);
+  alert('Anda di-kick oleh Admin ' );
   restoreAuth();
 });
